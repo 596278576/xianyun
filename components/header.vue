@@ -18,13 +18,20 @@
         <nuxt-link to="/user/login" v-if="$store.state.user.userInfo.token">
           <el-dropdown>
             <span class="el-dropdown-link">
-              <img class="defaultAvatar" :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar"/>
+              <img
+                class="defaultAvatar"
+                :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar"
+              />
               {{$store.state.user.userInfo.user.nickname}}
-              <i class="el-icon-arrow-down el-icon--right"></i>
+              <i
+                class="el-icon-arrow-down el-icon--right"
+              ></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>黄金糕</el-dropdown-item>
-              <el-dropdown-item>狮子头</el-dropdown-item>
+              <el-dropdown-item>
+                <div @click="out">退出登录</div>
+              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </nuxt-link>
@@ -35,7 +42,17 @@
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    out() {
+      this.$store.commit("user/setUserInfo", {
+        token: "",
+        user: {}
+      });
+      this.$message.success('退出成功')
+    }
+  }
+};
 </script>
 
 <style lang='less' scoped>
@@ -69,7 +86,7 @@ export default {};
     }
   }
 }
-.defaultAvatar{
+.defaultAvatar {
   // display: block;
   height: 50px;
   vertical-align: middle;
