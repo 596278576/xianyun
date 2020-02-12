@@ -43,6 +43,7 @@
           type="date"
           placeholder="请选择日期"
           style="width: 100%;"
+          :picker-options="pickerOptions1"
           @change="handleDate"
         ></el-date-picker>
       </el-form-item>
@@ -61,6 +62,11 @@ import moment from "moment";
 export default {
   data() {
     return {
+      pickerOptions1: {
+        disabledDate(time) {
+          return time.getTime()+24*1000*3600 <= Date.now();
+        }
+      },
       form: {
         departCity: "",
         departCode: "",
@@ -112,6 +118,9 @@ export default {
           this.newArr1 = arr;
           cb(arr);
         });
+      } else {
+        this.newArr1 = [];
+        cb([]);
       }
     },
 
@@ -133,6 +142,9 @@ export default {
           this.newArr2 = arr;
           cb(arr);
         });
+      } else {
+        this.newArr2 = [];
+        cb([]);
       }
     },
 
