@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <div></div>
+        <FlightsFilters :data="cacheFlightsData" @getData='getData'/>
 
         <!-- 航班头部布局 -->
         <FlightsListHead></FlightsListHead>
@@ -33,38 +33,53 @@
 <script>
 import FlightsItem from "@/components/air/flightsItem.vue";
 import FlightsListHead from "@/components/air/flightsListHead.vue";
+import FlightsFilters from "@/components/air/flightsFilters.vue";
 import moment from "moment";
 
 export default {
   components: {
     FlightsListHead,
-    FlightsItem
+    FlightsItem,
+    FlightsFilters
   },
   data() {
     return {
       airList: [],
-      total:0,
-      pageIndex:1,//当前页面
-      pageSize:4 //页面条数
+      total: 0,
+      pageIndex: 1, //当前页面
+      pageSize: 4, //页面条数
+      cacheFlightsData: {
+        info: {},
+        flights: [], // 数组
+        options: {}
+      }
     };
   },
-  computed:{
-      dataList(){
-          if(!this.airList.flights){
-              return []
-          }
-          let arr=this.airList.flights.slice((this.pageIndex-1)*this.pageSize,this.pageIndex*this.pageSize)
-          return arr
+  computed: {
+    dataList() {
+      if (!this.airList.flights) {
+        return [];
       }
+      let arr = this.airList.flights.slice(
+        (this.pageIndex - 1) * this.pageSize,
+        this.pageIndex * this.pageSize
+      );
+      return arr;
+    }
   },
   methods: {
     handleSizeChange(val) {
-    //   console.log(`每页 ${val} 条`);
-    this.pageSize=val
+      //   console.log(`每页 ${val} 条`);
+      this.pageSize = val;
     },
     handleCurrentChange(val) {
-    //   console.log(`当前页: ${val}`);
-        this.pageIndex=val
+      //   console.log(`当前页: ${val}`);
+      this.pageIndex = val;
+    },
+    //获取筛选后的数据
+    getData(data){
+      this.airList.flights=data
+      this.total=data.length
     }
   },
   mounted() {
@@ -73,7 +88,8 @@ export default {
       params: this.$route.query
     }).then(res => {
       this.airList = res.data;
-      this.total=res.data.total
+      this.cacheFlightsData={...res.data}
+      this.total = res.data.total;
     });
   }
 };
