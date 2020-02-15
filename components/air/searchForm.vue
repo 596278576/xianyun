@@ -188,6 +188,9 @@ export default {
           path: "/air/flights",
           query: this.form
         });
+        this.$store.commit('air/setHistory',this.form)
+        // console.log(this.$store.state.air.history);
+        
       } else {
         // this.$message.error("行程不存在");
         this.$confirm("机票不存在", "提示", {
