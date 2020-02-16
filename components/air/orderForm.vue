@@ -63,6 +63,7 @@
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
       </div>
     </div>
+    <span>{{arrPrice}}</span>
   </div>
 </template>
 
@@ -99,7 +100,14 @@ export default {
     },
     //保险
     handleInsurance(id) {
-      this.form.insurances.push(id);
+        let index=this.form.insurances.indexOf(id)
+        if(index>-1){
+            this.form.insurances.splice(index, 1);
+        }else{
+         this.form.insurances.push(id);
+
+        }
+
     },
     // 发送手机验证码
     handleSendCaptcha() {
@@ -187,7 +195,32 @@ export default {
     }).then(res => {
       //   console.log(res);
       this.infoData = res.data;
+      this.$store.commit('air/setAirList',res.data)
     });
+  },
+  computed:{
+    arrPrice(){
+      if(!this.infoData.seat_infos){
+        return
+      }
+      let price=0
+      //单价
+      price+=this.infoData.seat_infos.org_settle_price
+      //计算燃油费
+      price+=this.infoData.airport_tax_audlet
+      //计算保险
+      this.infoData.insurances.forEach(v=>{
+        if(this.form.insurances.indexOf(v.id)>-1){
+          price+=v.price
+        }
+      })
+      //计算人数
+      price*=this.form.users.length
+      console.log(price);
+      
+      this.$store.commit('air/setPrice',price)
+      return ''
+    }
   }
 };
 </script>
